@@ -1,10 +1,7 @@
 <?php
 
-// $dsn = "mysql:host=localhost;dbname=id18929726_approval";
-// $db_user = "id18929726_pankaj";
-// $db_password = "NMJAw3-QZmt^l&Qx";
 
-$dsn = "mysql:host=localhost;dbname=approval2";
+$dsn = "mysql:host=localhost;dbname=donation";
 $db_user = "root";
 $db_password = "";
 
@@ -20,7 +17,6 @@ try{
 }
 
 
-// $hostname = 'https://associated-tape.000webhostapp.com';
 $hostname = 'http://localhost/food';
 
 $emailUsername = 'ramdhani2233ramdhani@gmail.com';
