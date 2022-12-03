@@ -1,3 +1,4 @@
+<?php include "connection.php"; ?>
 <html lang="en">
     <head>
     
@@ -17,8 +18,14 @@
         </div>
         <h2 class="title-font text-2xl font-medium text-gray-900 mt-6 mb-3">Donation Management</h2>
         <p class="leading-relaxed text-base">Thanks For The Donation Our Team Will Connect To You</p>
-<a href="home.html" class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Home</a>
+<a href="<?php echo $hostname; ?>" class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Home</a>
         
       </div>
       
 </section>
+
+<script>
+  setTimeout(() => {
+    location.href = "<?php echo $hostname; ?>";
+  }, 2000);
+</script>

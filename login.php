@@ -1,9 +1,48 @@
+<?php 
+include 'connection.php';
+session_start();
+if(isset($_SESSION['username']) && isset($_SESSION['id'])){
+  header("Location: {$hostname}/admin/dashboard.php");
+}
+
+if(isset($_REQUEST['login'])){
+
+  if(($_POST['email'] !== '') && ($_POST['password'] !== '')){
+    
+    $username = $_POST['email'];
+    $password = md5($_POST['password']);
+   
+    try{
+      $sql = "SELECT username, id, user_type, state FROM user WHERE username = ? AND password = ?";
+      $result = $conn->prepare($sql);
+      $result->execute(array($username, $password));
+      if($result->rowCount() > 0){
+        $row = $result->fetch(PDO::FETCH_ASSOC);
+        $_SESSION['username'] = $username;
+        $_SESSION['id'] = $row['id'];
+				$_SESSION['user_type'] = $row['user_type'];
+				$_SESSION['state'] = $row['state'];
+        header("Location: {$hostname}/admin/dashboard.php");
+      } else{
+        $msg = '<div class="alert alert-warning w3-yellow">Invalid Credential</div>';
+      }  
+    } catch(PDOException $e){
+      echo $e->getMessage();
+    }
+  } else{
+    $msg = '<div class="alert alert-danger">Fill all fields</div>';
+  }
+}
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="css/w3css.css">
   <title>Document</title>
   <style>
     
@@ -261,6 +300,7 @@ footer a {
   </style>
 </head>
 <body>
+
 <h2>Weekly Coding Challenge #1: Sign in/up Form</h2>
 <div class="container" id="container">
 	<div class="form-container sign-up-container">
@@ -278,21 +318,25 @@ footer a {
 			<button>Sign Up</button>
 		</form>
 	</div>
+
 	<div class="form-container sign-in-container">
-		<form action="#">
+		<form action="" method="post">
 			<h1>Sign in</h1>
 			<div class="social-container">
-				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+				<!-- <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
 				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a> -->
 			</div>
 			<span>or use your account</span>
-			<input type="email" placeholder="Email" />
-			<input type="password" placeholder="Password" />
+			<input type="text" placeholder="Email" name="email" />
+			<input type="password" placeholder="Password" name="password" />
 			<a href="#">Forgot your password?</a>
-			<button>Sign In</button>
+			<button type="submit" name="login">Sign In</button>
+			<!-- <input type="submit" name="login" value="Sign In"> -->
 		</form>
+		<?php if($msg){ echo $msg; } ?>
 	</div>
+
 	<div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">

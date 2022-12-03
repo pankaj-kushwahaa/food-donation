@@ -1,103 +1,314 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
+<?php 
+$name = ""; $email = ""; $number=""; $state = ""; $cloth=""; $random=""; $address=""; 
+$msg3 = "";
+define('TITLE', "Donation");
+define('PAGE', "donation");
+include "header.php";
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+
+require('PHPMailer/Exception.php');
+require('PHPMailer/PHPMailer.php');
+require('PHPMailer/SMTP.php');
+
+// Registration
+if(isset($_POST['Submit'])){
     
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width , initial-scale=1.0">
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-        <title>Donation</title>
-        
-    </head>
-<body>
+  $name = trim($_POST['name']);
+  $email = trim($_POST['email']);
+  $number = trim($_POST['number']);
+  $state = trim($_POST['state']);
+  $cloth = trim($_POST['cloth']);
+  $address = trim($_POST['address']);
+  $random = $_POST['random'];
+
+  $nm = preg_match("/^([A-Za-z0-9 ]{4,})$/", $_REQUEST['name']);
+  $em = preg_match("/^([A-Za-z0-9@.]{4,})$/", $_REQUEST['email']);
+  $ph = preg_match("/^([0-9]{10,13})$/", $_REQUEST['number']);
+  $st = preg_match("/^([0-9]{1,})$/", $_REQUEST['state']);
+  // $cl = preg_match("/^([A-Za-z0-9.-: ,#]{2,})$/", $_REQUEST['cloth']);
+  // $add = preg_match("/^([A-Za-z0-9@.-: ,#]{4,})$/", $_REQUEST['address']);
+
+  // echo "name ".$nm."<br>";
+  // echo "email ".$em."<br>";  
+  // echo "phone ".$ph."<br>";
+  // echo "state ".$st."<br>";
+  // echo "cl ".$cl."<br>";
+  // echo "add ".$add."<br>";
+  if($nm && $em && $ph && $st){
+    //Create an instance; passing `true` enables exceptions
+    $mail = new PHPMailer(true);
     
-    <header class="text-gray-600 body-font">
-        <header style="background-color:#5658df;"></body>
-        <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-          <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-            </svg>
-            <span class="ml-3 text-xl">Donation Management</span>
-          </a>
-          <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
-            <a href="home.html" class="mr-5 hover:text-gray-900">Home</a>
-            <a href="Donation.html" class="mr-5 hover:text-gray-900">Donate</a>
-            <a href="mission.html" class="mr-5 hover:text-gray-900">Mission</a>
-            <a href="about.html" class="mr-5 hover:text-gray-900">About</a>
-          </nav>
-                      <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </button>
-        </div>
-        <body>
+    try {
+        //Server settings
+        /*$mail->SMTPDebug = SMTP::DEBUG_SERVER;*/      //Enable verbose debug output
+        $mail->isSMTP();                             //Send using SMTP
+        $mail->Host       = 'smtp.gmail.com';     //Set the SMTP server to send through
+        $mail->SMTPAuth   = true;                      //Enable SMTP authentication
+        $mail->Username   = $emailUsername;            //SMTP username
+        $mail->Password   = $emailPassword;             //SMTP password
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //Enable implicit TLS encryption
+        $mail->Port       = 465;                         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+    
+        //Recipients
+        $mail->setFrom($emailUsername, $emailName);
+        $mail->addAddress($email);     //Add a recipient
+        // $mail->addAddress('ellen@example.com');               //Name is optional
+        // $mail->addReplyTo('info@example.com', 'Information');
+        // $mail->addCC('cc@example.com');
+        // $mail->addBCC('bcc@example.com');
+    
+        //Attachments
+        // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+        // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+    
+        //Content
+        $mail->isHTML(true);                                  //Set email format to HTML
+        $mail->Subject = 'Email Verification';
+        $mail->Body    = 'Code for verification is : <b>'.$random.'</b>';
+        $mail->AltBody = 'Code for verification is : <b>'.$random.'</b>';
+    
+        $mail->send();
+
+        $message2 =  '<script>
+        document.addEventListener("DOMContentLoaded", () => {
+        var rand_btn_toggle = document.getElementById("login2");
+            rand_btn_toggle.click();
+        });
+        </script>';
+
+    } catch (Exception $e) {
+        $msg3 = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+    }
+
+
+  } else{
+    $msg3 = '<div class="w3-panel w3-pale-red w3-border">
+    <h4>Fill all fields with valid inputs</h4>
+    </div>';
+  }
+}
+
+// Final Submit
+if(isset($_POST['Submit1'])){
+  
+  $randomCode = $_POST['randomCode'];
+
+  $name = trim($_POST['name']);
+  $email = trim($_POST['email']);
+  $number = trim($_POST['number']);
+  $state = trim($_POST['state']);
+  $cloth = trim($_POST['cloth']);
+  $address = trim($_POST['address']);
+  $random = $_POST['random'];
+
+  if($random == $randomCode){
+
+    $sql3 = "INSERT INTO clothes (name, email, phone, cloth_detail, state, full_address, confirm_by, collect) VALUES (?, ?, ?, ?, ?,?,?,?)";
+      $result3 = $conn->prepare($sql3);
+      if($result3->execute(array($name, $email, $number, $cloth, $state, $address, 0, 0))){
+        $sql4 = "SELECT username from user WHERE state = ?";
+        $values4 = array($state);
+        $row4 = $db->query($sql4, $values4);
+        $user_email = $row4[0]['username'];
+
+       $mail = new PHPMailer(true);
+   
+       try {
+           //Server settings
+           /*$mail->SMTPDebug = SMTP::DEBUG_SERVER;*/      //Enable verbose debug output
+           $mail->isSMTP();                             //Send using SMTP
+           $mail->Host       = 'smtp.gmail.com';     //Set the SMTP server to send through
+           $mail->SMTPAuth   = true;                      //Enable SMTP authentication
+           $mail->Username   = $emailUsername;            //SMTP username
+           $mail->Password   = $emailPassword;             //SMTP password
+           $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;  //Enable implicit TLS encryption
+           $mail->Port       = 465;                         //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+       
+           //Recipients
+           $mail->setFrom($emailUsername, $emailName);
+           $mail->addAddress($user_email);     //Add a recipient
+           // $mail->addAddress('ellen@example.com');               //Name is optional
+           // $mail->addReplyTo('info@example.com', 'Information');
+           // $mail->addCC('cc@example.com');
+           // $mail->addBCC('bcc@example.com');
+       
+           //Attachments
+           // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+           // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+       
+           //Content
+           $mail->isHTML(true);                                  //Set email format to HTML
+           $mail->Subject = 'New cloth donation request';
+           $mail->Body    = '<h4>New cloth request</h4><b>Name : </b>'.$name.'<br> <b>Email : </b>'.$email.'<br><b>Phone : </b>'.$number.'<br><b>Address : </b>'.$address.'<br>'.'<b>Cloth Detail : </b>'.$cloth;
+           $mail->AltBody = '<h4>New Cloth request</h4><b>Name : </b>'.$name.'<br> <b>Email : </b>'.$email.'<br><b>Phone : </b>'.$number.'<br><b>Address : </b>'.$address.'<br>'.'<br><b>Cloth Detail : </b>'.$cloth;
+       
+           $mail->send();
+   
+       } catch (Exception $e) {
+          echo $mail->ErrorInfo; 
+       }
+          $msg3 = "<script>location.href = '".$hostname."/thanks.php';</script>";
+        }else{
+          unset($random);
+            $msg3 = '<div class="w3-panel w3-pale-red w3-border"><h3>Unable to send request, some technical problem</h3></div>';       
+        }  
+  } else {
+    $message3 = '<div class="w3-panel w3-pale-red w3-border">Wrong code, enter valid code</div>';
+    $message2 =  '<script>
+            var rand_btn_toggle = document.getElementById("login2");
+              //setTimeout(() => {
+                rand_btn_toggle.click();
+             // }, 1000);
+            </script>';
+  }
+}
+?>
+          <section class="text-gray-600 body-font relative">
+            <div class="container px-5 mx-auto">
+              <div class="flex flex-col text-center w-full mb-2">
+                <h1 class="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">Donate Cloth Here</h1>
+                <p class="lg:w-2/3 mx-auto leading-relaxed text-base">Fill The Form And Our Team Will Connect You</p>
+              </div>
+              <?php if(isset($msg3)){ echo $msg3; } ?>
+              <form action="" method="post">
+                <div class="lg:w-1/2 md:w-2/3 mx-auto">
+                  <div class="flex flex-wrap -m-2">
+
+                    <div class="p-2 w-1/2">
+                      <div class="relative">
+                        <label for="name" class="leading-7 text-sm text-gray-600">Name</label>
+                        <input type="text" id="name" name="name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" placeholder="Full Name" required>
+                      </div>
+                    </div>
+
+                    <div class="p-2 w-1/2">
+                      <div class="relative">
+                        <label for="number" class="leading-7 text-sm text-gray-600">Number</label>
+                        <input type="number" id="number" name="number" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" placeholder="9876543210" required>
+                      </div>
+                    </div> 
+
+                    <div class="p-2 w-1/2">
+                      <div class="relative">
+                        <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
+                        <input type="email" id="email" name="email" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" placeholder="abc@gmail.com" required>
+                      </div>
+                    </div> 
+
+                    <div class="p-2 w-1/2">
+                      <div class="relative">
+                        <label for="state" class="leading-7 text-sm text-gray-600">State</label>
+                        <select name="state" id="state" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" required>
+                          <option value="" selected disabled>Select</option>
+                          <?php 
+                          $sql = "SELECT * FROM state";
+                          $values = array();
+                          $rows = $db->query($sql, $values);
+                          if($rows){
+                            foreach($rows as $row){
+                            echo "<option value=".$row['state_id'].">".$row['state_name']."</option>";
+                          }}
+                          ?>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div class="p-2 w-full">
+                      <div class="relative">
+                        <label for="cloth" class="leading-7 text-sm text-gray-600">Cloth Detail</label>
+                        <textarea id="cloth" name="cloth" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-20 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out" required placeholder="Details about clothes"></textarea>
+                      </div>
+                    </div>  
+
+                    <div class="p-2 w-full">
+                      <div class="relative">
+                        <label for="Address" class="leading-7 text-sm text-gray-600">Full Address</label>
+                        <textarea id="Address" name="address" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-20 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out" placeholder="House no., Street no., Locality, Town/Village, City, District" required></textarea>
+                        <input type="hidden" name="random" value="<?php echo mt_rand(100000,999999);  ?>">
+                      </div>
+                    </div>
+                    
+                    <div class="p-2 w-full">
+                      <input type="submit" value="Submit" name="Submit" class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">
+                    </div>
+
+                    <div class="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
+                      <a class="text-indigo-500">example@email.com</a>
+                      <p class="leading-normal my-5">XYZ Ngo
+                        <br>Abc Block, Dera Bassi
+                      </p> 
+                    </div>
+
+                  </div>
+                </div>
+              </form>
+            </div>
+          </section>
+
+
+<!-- <div class="w3-container"> -->
+  <label onclick="document.getElementById('id01').style.display='block'" id="login2">Open Modal</label>
+
+  <div id="id01" class="w3-modal">
+    <div class="w3-modal-content">
+      <header class="w3-container w3-teal"> 
+        <!-- <span onclick="document.getElementById('id01').style.display='none'" 
+        class="w3-button w3-display-topright">&times;</span> -->
+        <h3>Verify E-mail</h3>
       </header>
-<section class="text-gray-600 body-font relative">
-  <div class="container px-5 py-24 mx-auto">
-    <div class="flex flex-col text-center w-full mb-12">
-      <h1 class="sm:text-3xl text-2xl font-medium title-font mb-4 text-gray-900">Clothes Donation</h1>
-      <p class="lg:w-2/3 mx-auto leading-relaxed text-base">Fill The Details To Donate Clothes</p>
-    </div>
-    <div class="lg:w-1/2 md:w-2/3 mx-auto">
-      <div class="flex flex-wrap -m-2">
-        <div class="p-2 w-1/2">
-          <div class="relative">
-            <label for="name" class="leading-7 text-sm text-gray-600">Name</label>
-            <input type="text" id="name" name="name" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-          </div>
-        </div>
-        <div class="p-2 w-1/2">
-          <div class="relative">
-            <label for="email" class="leading-7 text-sm text-gray-600">Email</label>
-            <input type="email" id="email" name="email" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out">
-          </div>
-        </div>
-        <div class="p-2 w-full">
-          <div class="relative">
-            <label for="message" class="leading-7 text-sm text-gray-600">Clothes Detail</label>
-            <textarea id="message" name="message" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
-          </div>
-        </div>
-</div>
-        <div class="p-2 w-full">
-          <div class="relative">
-            <label for="message" class="leading-7 text-sm text-gray-600">Address</label>
-            <textarea id="message" name="message" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out"></textarea>
-          </div>
-        
-        <div class="p-2 w-full">
-          <a href="thanks.html" class="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Submit</a></Submit>
-        </div>
-        <div class="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center">
-          <a class="text-indigo-500">example@email.com</a>
-          <p class="leading-normal my-5">49 Smith St.
-            <br>Saint Cloud, MN 56301
-          </p>
-          <span class="inline-flex">
-            <a class="text-gray-500">
-              <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-              </svg>
-            </a>
-            <a class="ml-4 text-gray-500">
-              <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-              </svg>
-            </a>
-            <a class="ml-4 text-gray-500">
-              <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zm1.5-4.87h.01"></path>
-              </svg>
-            </a>
-            <a class="ml-4 text-gray-500">
-              <svg fill="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-5 h-5" viewBox="0 0 24 24">
-                <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-              </svg>
-            </a>
-          </span>
-        </div>
+      <div class="w3-container">
+      <form action="" method="post">
+        <div class="w3-section">
+          <?php if(isset($message3)){ echo $message3; } ?>
+          <label for="rand_num">Code sent on your E-mail</label>
+          <input type="number" class="w3-input w3-border" id="rand_num" required name="randomCode" value="" placeholder="6-digit code" />
+          <input type="hidden" name="name" value="<?php if(isset($name))echo $name; ?>">
+          <input type="hidden" name="email" value="<?php if(isset($email)) echo $email; ?>">
+          <input type="hidden" name="number" value="<?php if(isset($number)) echo $number; ?>">
+          <input type="hidden" name="state" value="<?php if(isset($state)) echo $state; ?>">
+          <input type="hidden" name="cloth" value="<?php if(isset($cloth)) echo $cloth; ?>">
+          <input type="hidden" name="address" value="<?php if(isset($address))echo $address; ?>">        
+          <input type="hidden" name="random" value="<?php if(isset($random)) echo $random;  ?>">
+          
+        </div><br>
+          <input type="submit" value="Confirm" name="Submit1" class="w3-btn w3-block w3-red modal-btn" id="confirmBTN" disabled="disabled" />
+        </form>
       </div>
+      <!-- <footer class="w3-container w3-teal">
+        <p>Modal Footer</p>
+      </footer> -->
     </div>
   </div>
-</section>
+<!-- </div> -->
+
+
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+// window.onclick = function(event) {
+// if (event.target == modal) {
+//   modal.style.display = "none";
+// }
+// }
+
+var rand_code = document.getElementById('rand_num');
+rand_code.addEventListener('keyup', () => {
+  rand_value = rand_code.value;
+  var confirmBtn = document.getElementById('confirmBTN');
+  if(rand_value.length >= 6){
+    confirmBtn.removeAttribute('disabled');
+  }
+});
+</script>
+<?php if(isset($message2))echo $message2; ?>
+<!-- Modal box end for confirmation -->
+
+
+  <?php include "footer.php"; ?>
+   

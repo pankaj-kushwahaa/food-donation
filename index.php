@@ -1,36 +1,93 @@
-<!DOCTYPE lang="en">
-    <head>
-    
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width , initial-scale=1.0">
-        <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
-        <title>Donation</title>
-        
-    </head>
-<body>
-  <header class="text-gray-600 body-font">
-      <header style="background-color:#5658df;">
-      <div class="container mx-auto flex flex-wrap p-5 flex-col md:flex-row items-center">
-        <a class="flex title-font font-medium items-center text-gray-900 mb-4 md:mb-0">
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-10 h-10 text-white p-2 bg-indigo-500 rounded-full" viewBox="0 0 24 24">
-            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path>
-          </svg>
-          <span class="ml-3 text-xl text-white">Donation Management</span>
-        </a>
-        <nav class="md:mr-auto md:ml-4 md:py-1 md:pl-4 md:border-l md:border-gray-400	flex flex-wrap items-center text-base justify-center">
+<?php 
+define('TITLE', "Food Donation System");
+define('PAGE', "index");
+session_start();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
 
-          <a href="index.php" class="mr-5 hover:text-white-900 text-white">Home</a>
-          <a href="Donation.php" class="mr-5 hover:text-white-900 text-white">Donate</a>
-          <a href="mission.php" class="mr-5 hover:text-white-900 text-white">Mission</a>
-          <a href="about.php" class="mr-5 hover:text-white-900 text-white">About</a>
-        </nav>
-                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-            <path d="M5 12h14M12 5l7 7-7 7"></path>
-          </svg>
-        </button>
-      </div>
-    </header>
-  </header>
+
+// Registration
+if(isset($_POST['register'])){
+  if(($_POST['Name'] !== '') && ($_POST['Email'] !== '') && ($_POST['Phone'] !== '') && ($_POST['Branch'] !== '') && ($_POST['Rollno'] !== '') && ($_POST['Password'] !== '')){
+    
+    $name = $_POST['Name'];
+    $email = $_POST['Email'];
+    $phone = $_POST['Phone'];
+    $branch = $_POST['Branch'];
+    $rollno = $_POST['Rollno'];
+    $password = $_POST['Password'];
+    $random = $_POST['random'];
+
+    // Login
+    $sql4 = "SELECT stu_email, stu_rollno FROM student WHERE stu_email = ?";
+    $result4 = $conn->prepare($sql4);
+    $result4->execute([$email]);
+    if($result4->rowCount() > 0){
+      unset($random);
+      $msg3 = '<div class="alert alert-warning">User Already Registered</div>';
+    } else{
+
+       require('PHPMailer/Exception.php');
+       require('PHPMailer/PHPMailer.php');
+       require('PHPMailer/SMTP.php');
+        
+        //Create an instance; passing `true` enables exceptions
+        $mail = new PHPMailer(true);
+        
+        try {
+            //Server settings
+            /*$mail->SMTPDebug = SMTP::DEBUG_SERVER;*/                      //Enable verbose debug output
+            $mail->isSMTP();                                            //Send using SMTP
+            $mail->Host       = 'smtp.gmail.com';                     //Set the SMTP server to send through
+            $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
+            $mail->Username   = $emailUsername;                  //SMTP username
+            $mail->Password   = $emailPassword;                          //SMTP password
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
+            $mail->Port       = 465;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+        
+            //Recipients
+            $mail->setFrom($emailUsername, $emailName);
+            $mail->addAddress($email);     //Add a recipient
+            // $mail->addAddress('ellen@example.com');               //Name is optional
+            // $mail->addReplyTo('info@example.com', 'Information');
+            // $mail->addCC('cc@example.com');
+            // $mail->addBCC('bcc@example.com');
+        
+            //Attachments
+           // $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
+           // $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+        
+            //Content
+            $mail->isHTML(true);                                  //Set email format to HTML
+            $mail->Subject = 'Email Verification';
+            $mail->Body    = 'Code for verification is : <b>'.$random.'</b>';
+            $mail->AltBody = 'Code for verification is : <b>'.$random.'</b>';
+        
+            $mail->send();
+
+            $message2 =  '<script>
+            document.addEventListener("DOMContentLoaded", () => {
+            var rand_btn_toggle = document.getElementById("login2");
+                rand_btn_toggle.click();
+            });
+            </script>';
+
+        } catch (Exception $e) {
+            $msg3 = "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
+        }
+
+    }
+  } else{
+    $msg3 = '<div class="alert alert-danger">Fill all fields</div>';
+  }
+}
+
+
+include "header.php";
+?>
+
+
 
   <section class="text-gray-600 body-font">
     <div class="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center">
@@ -59,7 +116,7 @@
         </div>
         
         <div class="flex flex-wrap -m-4">
-          
+
           <div class="xl:w-1/3 md:w-1/2 p-4">
             <div class="border border-gray-200 p-6 rounded-lg">
               <div class="w-10 h-10 inline-flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 mb-4">
@@ -105,6 +162,7 @@
 
     </section>
   </section>
+
                         
 </body>
 </html>
