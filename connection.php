@@ -17,9 +17,9 @@
 
 
 $hostname = 'http://localhost/food';
-$emailUsername = 'ramdhani2233ramdhani@gmail.com';
-$emailPassword = 'xrcgbbkhebxvbyfp';
-$emailName = 'Pankaj';
+$emailUsername = 'email'; // Your email id
+$emailPassword = 'password'; // Your email id password
+$emailName = 'Food Donation';
 $websiteName = 'Food Donation';
 
 // Global Variables 
@@ -77,16 +77,6 @@ class Database {
 
 $conn = Database::connect();
 $db = new Database();
-// $sql = "SELECT * FROM state";
-// $values = array();
-// $row =$db->query($sql, $values);
-// if($row){
-//   echo "inside if ";
-// }
-
-// echo "<pre>";
-// echo print_r($row);
-// echo "</pre>";
 
 
 ?>

@@ -11,7 +11,6 @@ include("loginredirect.php");
     <link rel="stylesheet" href="../css/tailwind.css">
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/w3css.css">
-    <link rel="stylesheet" href="../css/font-awesome.css">
     <link rel="stylesheet" href="../css/style.css">
 
 
