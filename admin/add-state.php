@@ -24,7 +24,7 @@ if(isset($_REQUEST['Submit'])){
 
   $state = $_REQUEST['state'];
 
-  $st = preg_match("/^([A-Za-z]{4,})$/", $_REQUEST['state']);
+  $st = preg_match("/^([A-Za-z, -  ]{4,})$/", $_REQUEST['state']);
   if($st){
     $sql = "INSERT INTO state (state_name) VALUES (?)";
     $values = array($state);
@@ -42,7 +42,7 @@ if(isset($_REQUEST['Update'])){
   $state = $_REQUEST['state'];
   $state_id = $_REQUEST['state_id'];
 
-  $st = preg_match("/^([A-Za-z]{4,})$/", $_REQUEST['state']);
+  $st = preg_match("/^([A-Za-z, ]{4,})$/", $_REQUEST['state']);
   if($st){
     $sql = "UPDATE state SET state_name = ? WHERE state_id = ?";
     $values = array($state, $state_id);

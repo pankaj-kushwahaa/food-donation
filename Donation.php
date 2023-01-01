@@ -207,7 +207,7 @@ if(isset($_POST['Submit1'])){
               <select name="state" id="state" class="w-full bg-gray-100 bg-opacity-50 rounded border border-gray-300 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" required>
                 <option value="" selected disabled>Select</option>
                 <?php 
-                $sql = "SELECT * FROM state";
+                $sql = "SELECT * FROM state INNER JOIN user ON state.state_id = user.state";
                 $values = array();
                 $rows = $db->query($sql, $values);
                 if($rows){
@@ -260,7 +260,6 @@ if(isset($_POST['Submit1'])){
 </section>
 
 <!-- Modal box -->
-<label onclick="document.getElementById('id01').style.display='block'" id="login2">Open Modal</label>
 
 <div id="id01" class="w3-modal">
   <div class="w3-modal-content">
@@ -326,7 +325,5 @@ rand_code.addEventListener('keyup', () => {
 <?php if(isset($message2))echo $message2; ?>
 
 <!-- Modal box end for confirmation -->
-
-
-  <?php include "footer.php"; ?>
+<?php include "footer.php"; ?>
    

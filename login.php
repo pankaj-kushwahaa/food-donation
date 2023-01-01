@@ -24,13 +24,13 @@ if(isset($_REQUEST['login'])){
 				$_SESSION['state'] = $row['state'];
         header("Location: {$hostname}/admin/dashboard.php");
       } else{
-        $msg = '<div class="alert alert-warning w3-yellow">Invalid Credential</div>';
+        $msg = '<a class="w3-alert alert-warning w3-yellow">Invalid Username & Password</a>';
       }  
     } catch(PDOException $e){
       echo $e->getMessage();
     }
   } else{
-    $msg = '<div class="alert alert-danger">Fill all fields</div>';
+    $msg = '<a class="w3-alert alert-warning w3-yellow">Fill all fields</a>';
   }
 }
 ?>
@@ -139,11 +139,11 @@ input {
 .container {
 	background-color: #fff;
 	border-radius: 10px;
-  	box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 
 			0 10px 10px rgba(0,0,0,0.22);
 	position: relative;
 	overflow: hidden;
-	width: 768px;
+	width: 500px;
 	max-width: 100%;
 	min-height: 480px;
 }
@@ -157,7 +157,7 @@ input {
 
 .sign-in-container {
 	left: 0;
-	width: 50%;
+	width: 100%;
 	z-index: 2;
 }
 
@@ -300,10 +300,8 @@ footer a {
   </style>
 </head>
 <body>
-
-<h2>Weekly Coding Challenge #1: Sign in/up Form</h2>
 <div class="container" id="container">
-	<div class="form-container sign-up-container">
+	<!-- <div class="form-container sign-up-container">
 		<form action="#">
 			<h1>Create Account</h1>
 			<div class="social-container">
@@ -317,27 +315,27 @@ footer a {
 			<input type="password" placeholder="Password" />
 			<button>Sign Up</button>
 		</form>
-	</div>
+	</div> -->
 
 	<div class="form-container sign-in-container">
 		<form action="" method="post">
-			<h1>Sign in</h1>
-			<div class="social-container">
-				<!-- <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+			<h1>Log In</h1><br>
+			<!-- <div class="social-container">
+				<a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
 				<a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a> -->
-			</div>
-			<span>or use your account</span>
+				<a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+			</div> -->
 			<input type="text" placeholder="Email" name="email" />
 			<input type="password" placeholder="Password" name="password" />
-			<a href="#">Forgot your password?</a>
+			<?php if(isset($msg)){ echo $msg; } ?>
 			<button type="submit" name="login">Sign In</button>
 			<!-- <input type="submit" name="login" value="Sign In"> -->
 		</form>
-		<?php if($msg){ echo $msg; } ?>
+		
+		
 	</div>
 
-	<div class="overlay-container">
+	<!-- <div class="overlay-container">
 		<div class="overlay">
 			<div class="overlay-panel overlay-left">
 				<h1>Welcome Back!</h1>
@@ -351,22 +349,22 @@ footer a {
 			</div>
 		</div>
 	</div>
-</div>
+</div> -->
 
 
 
 <script>
-  const signUpButton = document.getElementById('signUp');
-const signInButton = document.getElementById('signIn');
-const container = document.getElementById('container');
+//   const signUpButton = document.getElementById('signUp');
+// const signInButton = document.getElementById('signIn');
+// const container = document.getElementById('container');
 
-signUpButton.addEventListener('click', () => {
-	container.classList.add("right-panel-active");
-});
+// signUpButton.addEventListener('click', () => {
+// 	container.classList.add("right-panel-active");
+// });
 
-signInButton.addEventListener('click', () => {
-	container.classList.remove("right-panel-active");
-});
+// signInButton.addEventListener('click', () => {
+// 	container.classList.remove("right-panel-active");
+// });
 </script>
 </body>
 </html>

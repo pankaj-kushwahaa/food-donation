@@ -17,8 +17,8 @@
 
 
 $hostname = 'http://localhost/food';
-$emailUsername = 'email'; // Your email id
-$emailPassword = 'password'; // Your email id password
+$emailUsername = 'ramdhani2233ramdhani@gmail.com'; // Your email id
+$emailPassword = 'zyaaqbpotprjwlct'; // Your email id password
 $emailName = 'Food Donation';
 $websiteName = 'Food Donation';
 

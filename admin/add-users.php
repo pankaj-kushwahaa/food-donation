@@ -1,6 +1,6 @@
 <?php  
 // For pagination
-$limit = 1;
+$limit = 7;
 if(isset($_REQUEST['page'])){
   $page = $_REQUEST['page'];
 }else{
@@ -13,13 +13,22 @@ define('PAGE', 'add users');
 include "header.php";
 
 $msg = '';
-
+// Delete user code
 if(isset($_REQUEST['del_id'])){
   $del_id = $_REQUEST['del_id'];
+ 
+  $sql = "DELETE FROM food WHERE state = ?";
+  $values = array($del_id);
+  $row1 = $db->insert($sql, $values);
+  
+  $sql = "DELETE FROM clothes WHERE state = ?";
+  $values = array($del_id);
+  $row2 = $db->insert($sql, $values);
+
   $sql = "DELETE FROM user WHERE id = ?";
   $values = array($del_id);
-  $row = $db->insert($sql, $values);
-  if($row){
+  $row3 = $db->insert($sql, $values);
+  if($row1 && $row2 && $row3){
     $msg = '<div class="alert alert-danger" id="add-success">Delete successfully</div>';
   }
 }
@@ -39,7 +48,7 @@ if(isset($_REQUEST['Submit'])){
   if($em && $ph && $st && $pas){
 
     $sql = "SELECT username from user WHERE username = ?";
-    $values = array($email);
+    $values = array($username);
     $row = $db->query($sql, $values);
     if($row){
       $msg = '<div class="alert alert-danger">User already registered</div>';
@@ -172,7 +181,7 @@ if(isset($_REQUEST['id'])){
               <a href="add-users.php?id=<?php if(isset($value['id'])){ echo $value['id']; } ?>" class="w3-btn w3-round w3-green w3-small">Edit</a>
             </td>
             <td>
-                <a href="add-users.php?del_id=<?php if(isset($value['id'])){ echo $value['id']; } ?>" class="w3-btn w3-round w3-red w3-small">Delete</a>
+                <label onclick="document.getElementById('id01').style.display='block'" id="login2" class="w3-btn w3-round w3-red w3-small">Delete</label>
             </td>
           </tr>
           <?php }}  ?>
@@ -181,6 +190,39 @@ if(isset($_REQUEST['id'])){
       </div>
   </div>
 </div>
+
+<!-- Modal box -->
+
+<div id="id01" class="w3-modal">
+  <div class="w3-modal-content">
+    <header class="w3-container w3-teal"> 
+      <span onclick="document.getElementById('id01').style.display='none'" 
+      class="w3-button w3-display-topright">&times;</span>
+      <h3>Confirm ?</h3>
+    </header>
+    <div class="w3-container">
+      <div class="w3-section">
+        <br>
+        <h4>This will delete all data associated with this user</h4>
+        <br>
+        <a href="add-users.php?del_id=<?php if(isset($value['id'])){ echo $value['id']; } ?>" class="w3-btn w3-round w3-red">Delete</a>
+        &nbsp;&nbsp;&nbsp;
+        <a class="w3-btn w3-round w3-gray" onclick="document.getElementById('id01').style.display='none'">Cancel</a>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+// Get the modal
+var modal = document.getElementById('id01');
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+if (event.target == modal) {
+  modal.style.display = "none";
+}
+}
+</script>
 
     <!-- Pagination Start -->
     <div class="w3-row pagination">
