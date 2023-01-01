@@ -7,13 +7,14 @@
  
  Import "database/donation.sql"
  
- Edit "connectio.php" according to database name and user/password
+ Edit "connectio.php" according to database name and user/password  
+
+ Add Email and Password
  
  #### Admin user id
  username : admin
  
  password : 12345
- 
- - Admin user add user and assign users to different states to collect food or clothes
+
  
  
